@@ -1,0 +1,27 @@
+﻿<Window x:Class="Fagprojekt.HeatMap"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="Heatmap" Height="177.043" Width="350">
+
+
+    <Window.Resources>
+        <DataTemplate x:Key="DataTemplate_Level2">
+            <Button Content="{Binding}" Height="40" Width="50" Margin="4,4,4,4" Click="Button_Click" Mouse.MouseEnter="Button_Mouse_Over"/>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DataTemplate_Level1">
+            <ItemsControl ItemsSource="{Binding}" ItemTemplate="{StaticResource DataTemplate_Level2}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </DataTemplate>
+
+    </Window.Resources>
+    <Grid>
+        <ItemsControl x:Name="lst" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
+    </Grid>
+</Window>
