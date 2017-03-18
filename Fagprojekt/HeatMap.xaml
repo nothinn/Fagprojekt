@@ -7,7 +7,7 @@
 
     <Window.Resources>
         <DataTemplate x:Key="DataTemplate_Level2">
-            <Button Content="{Binding}" Height="40" Width="50" Margin="4,4,4,4" Click="Button_Click" Mouse.MouseEnter="Button_Mouse_Over"/>
+            <Button Content="{Binding}" Height="40" Width="50" Margin="4,4,4,4" Click="Button_Click"/>
         </DataTemplate>
 
         <DataTemplate x:Key="DataTemplate_Level1">
@@ -21,7 +21,11 @@
         </DataTemplate>
 
     </Window.Resources>
-    <Grid>
-        <ItemsControl x:Name="lst" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
-    </Grid>
+    <StackPanel HorizontalAlignment="Left" >
+        <Button Content="Align windows" x:Name="align_button" Click="align_button_Click" Height="25"/>
+        <Grid>
+
+            <ItemsControl x:Name="lst" ItemTemplate="{DynamicResource DataTemplate_Level1}"/>
+        </Grid>
+    </StackPanel>
 </Window>

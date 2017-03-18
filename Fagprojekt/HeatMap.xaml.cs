@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -12,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Fagprojekt
 {
@@ -51,6 +53,7 @@ namespace Fagprojekt
             //this.LayoutUpdated += HeatMap_ContentRendered;
 
             can.ValueChanged += Can_ValueChanged;
+
         }
 
         private void Can_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -173,17 +176,27 @@ namespace Fagprojekt
             {
 
                 PlotWindow plotwindow;
-
-
                 button.Background = new SolidColorBrush(Color.FromRgb(255, 0, 0));
 
-                plotwindow = new PlotWindow(key);
-                plotwindow.Show();
+                Thread newWindowThread = new Thread(new ThreadStart(() => {
+                    plotwindow = new PlotWindow(key);
+                    plotwindow.Show();
 
+                    plotwindow.Closed += ((s, se) => {
+                        plotWindows.Remove(key);
+                        Dispatcher.CurrentDispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
+                    });
 
-                plotwindow.Closed += ((s,se) => plotWindows.Remove(key));
+                    plotWindows.Add(key, plotwindow);
 
-                plotWindows.Add(key, plotwindow);
+                    System.Windows.Threading.Dispatcher.Run();
+
+                } ));
+                
+
+                newWindowThread.SetApartmentState(ApartmentState.STA);
+                newWindowThread.IsBackground = true;
+                newWindowThread.Start();
 
             }
             else
@@ -191,8 +204,6 @@ namespace Fagprojekt
                 plotWindows[key].Close();
                 plotWindows.Remove(key);
             }
-
-
 
 
         }
@@ -225,7 +236,37 @@ namespace Fagprojekt
             }
         }
 
+
+        private void align_button_Click(object sender, RoutedEventArgs e)
+        {
+            double width = System.Windows.SystemParameters.PrimaryScreenWidth;
+            double height = System.Windows.SystemParameters.PrimaryScreenHeight;
+
+            double tempHeight = 0;
+            double tempWidt = 0;
+
+            foreach (PlotWindow window in plotWindows.Values)
+            {
+
+                window.Dispatcher.Invoke(() =>
+                {
+
+
+
+                    if (tempWidt + window.Width > width)
+                    {
+                        tempWidt = 0;
+                        tempHeight += window.ActualHeight;
+                    }
+                    window.Left = tempWidt;
+                    window.Top = tempHeight;
+
+                    tempWidt += window.Width;
+                    window.Activate();
+
+                });
+            }
+
+        }
     }
-
-
 }

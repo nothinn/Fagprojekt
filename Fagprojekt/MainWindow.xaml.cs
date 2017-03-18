@@ -85,7 +85,7 @@ namespace Fagprojekt
         {
             try
             {
-                can = new CanHandler(textBox.Text, 6666);
+                can = new CanHandler(textBox.Text, 8888);
 
                 Thread newThread = new Thread(printData);
 

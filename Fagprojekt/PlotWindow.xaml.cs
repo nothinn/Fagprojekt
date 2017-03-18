@@ -36,7 +36,6 @@ namespace Fagprojekt
 
         public PlotWindow(int key)
         {
-
             this.key = key;
             this.Title = "Plot for ID: " + Convert.ToString(key, 16);
             viewModel = new ViewModels.MainWindowModel();
@@ -53,8 +52,9 @@ namespace Fagprojekt
 
         public void UpdatePlotModel(Datapoint data)
         {
-            viewModel.UpdateModel(data);
             textBlock.Dispatcher.Invoke(() => textBlock.Text = ShowBinary(data));
+            viewModel.UpdateModel(data);
+            
         }
 
         private string ShowBinary(Datapoint data)
@@ -84,7 +84,7 @@ namespace Fagprojekt
         }
 
         public void Refresh()
-        {
+        {  
             Plot1.InvalidatePlot(true);
         }
     }

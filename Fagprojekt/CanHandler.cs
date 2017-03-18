@@ -20,7 +20,7 @@ namespace Fagprojekt
 
         private bool running; //For worker thread
 
-        private Dictionary<int, List<Datapoint>> dictArray; //Ændre dict til at bruge denne som et array, måske list i stedet.
+        //private Dictionary<int, List<Datapoint>> dictArray; //Ændre dict til at bruge denne som et array, måske list i stedet.
 
 
         private Queue<Datapoint> input;
