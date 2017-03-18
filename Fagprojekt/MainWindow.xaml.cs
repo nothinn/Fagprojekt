@@ -62,7 +62,10 @@ namespace Fagprojekt
                     {
                         textBlock.Text = temp;
                     }));
-                    
+                    if (heatMap != null)
+                    {
+                        heatMap.UpdatePlots();
+                    }
                 }
 
 
@@ -80,17 +83,36 @@ namespace Fagprojekt
         }
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            can = new CanHandler(textBox.Text,6666);
+            try
+            {
+                can = new CanHandler(textBox.Text, 6666);
 
-            Thread newThread = new Thread(printData);
+                Thread newThread = new Thread(printData);
 
-            newThread.Start();
+                newThread.Start();
 
-            can.start();
+                can.start();
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.ToString());
+            }
+
+            
+
 
 
         }
 
+        private void Can_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            //Value in one line changed
+        }
+
+        private void Can_ValueAdded(object sender, ValueChangedEventArgs e)
+        {
+            //New value appeared
+        }
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
@@ -98,7 +120,7 @@ namespace Fagprojekt
             {
                 
 
-                    heatMap = new HeatMap(can.Dict);
+                    heatMap = new HeatMap(can);
                     heatMap.Closed += HeatMap_Closed;
                     heatMap.Owner = this;
                     heatMap.Show();
@@ -120,6 +142,7 @@ namespace Fagprojekt
         {
             heatMap = null;
         }
+
     }
 
 

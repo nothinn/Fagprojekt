@@ -28,6 +28,7 @@ namespace Fagprojekt
 
         LineSeries series2 = new LineSeries
         {
+            RenderInLegend = false,
             MarkerType = MarkerType.Circle,
             MarkerSize = 4,
             MarkerStroke = OxyColors.White
@@ -35,12 +36,13 @@ namespace Fagprojekt
 
         public PlotWindow(int key)
         {
+
             this.key = key;
+            this.Title = "Plot for ID: " + Convert.ToString(key, 16);
             viewModel = new ViewModels.MainWindowModel();
             DataContext = viewModel;
 
-            CompositionTarget.Rendering += CompositionTargetRendering;
-
+  
             InitializeComponent();
 
 
@@ -48,13 +50,42 @@ namespace Fagprojekt
 
             Plot1.Model = viewModel.PlotModel;
         }
-        private void CompositionTargetRendering(object sender, EventArgs e)
-        {
-            Plot1.InvalidatePlot(true);
-        }
+
         public void UpdatePlotModel(Datapoint data)
         {
             viewModel.UpdateModel(data);
+            textBlock.Dispatcher.Invoke(() => textBlock.Text = ShowBinary(data));
+        }
+
+        private string ShowBinary(Datapoint data)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            bool i = false;
+            int j = 0;
+
+            foreach (byte datapoint in data.data)
+            {
+                if (i)
+                {
+                    builder.AppendFormat("Byte: {0}: {1}\n", j, Convert.ToString(datapoint, 2).PadLeft(8, '0'));
+                    i = !i;
+                }
+                else
+                {
+                    builder.AppendFormat("Byte: {0}:  {1},  ", j, Convert.ToString(datapoint, 2).PadLeft(8, '0'));
+                    i = !i;
+                }
+                j++;
+            }
+            
+
+            return builder.ToString();
+        }
+
+        public void Refresh()
+        {
+            Plot1.InvalidatePlot(true);
         }
     }
 }

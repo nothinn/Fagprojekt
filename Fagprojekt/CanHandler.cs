@@ -265,10 +265,6 @@ namespace Fagprojekt
 
         }
 
-        private bool DataEquals(Datapoint data1, Datapoint data2)
-        {
-            return true;
-        }
 
         public bool updateDict()
         {
@@ -286,14 +282,21 @@ namespace Fagprojekt
 
                 if (dict.ContainsKey(data.key))
                 {
-                    if (dict[data.key].data != data.data)
-                    {
+                    if (IsNewValue(dict[data.key], data)){
+                        ValueChangedEventArgs args = new ValueChangedEventArgs();
+                        args.Data = data;
+                        OnValueChanged(args);
                         dict[data.key] = data;
                     }
+
                 }
                 else
                 {
                     dict.Add(data.key, data);
+
+                    ValueChangedEventArgs args = new ValueChangedEventArgs();
+                    args.Data = data;
+                    OnValueAdded(args);
 
                     int[] temp = new int[IDs.Length + 1];
 
@@ -311,13 +314,51 @@ namespace Fagprojekt
 
                     IDs = temp;
 
-
-
-
                 }
             }
             return test;
         }
 
+
+        private bool IsNewValue(Datapoint data1, Datapoint data2)
+        {
+            if (data1.data.Length != data2.data.Length) return true;
+
+            int i = 0;
+
+            foreach(byte point in data1.data)
+            {
+                if (point != data2.data[i]) return true;
+                i++;
+            }
+            return false;
+        }
+
+        protected virtual void OnValueChanged(ValueChangedEventArgs e)
+        {
+            EventHandler<ValueChangedEventArgs> handler = ValueChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+
+        protected virtual void OnValueAdded(ValueChangedEventArgs e)
+        {
+            EventHandler<ValueChangedEventArgs> handler = ValueAdded;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
+        public event EventHandler<ValueChangedEventArgs> ValueAdded;
+    }
+
+    public class ValueChangedEventArgs : EventArgs
+    {
+        public Datapoint Data { get; set; }
     }
 }

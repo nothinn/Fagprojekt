@@ -26,8 +26,16 @@ namespace Fagprojekt
 
         Dictionary<int, Datapoint> data;
 
-        public HeatMap(Dictionary<int, Datapoint> data)
+        CanHandler can;
+
+        Dictionary<int, PlotWindow> plotWindows;
+
+        public HeatMap(CanHandler can)
         {
+            this.can = can;
+            plotWindows = new Dictionary<int, PlotWindow>();
+            Dictionary<int, Datapoint> data = can.Dict;
+
             this.data = data;
 
             int[,] array = new int[,] {};
@@ -38,8 +46,24 @@ namespace Fagprojekt
 
             lst.ItemsSource = ArrayToList(array);
 
+
+            can.ValueAdded += Can_ValueAdded;
             //this.LayoutUpdated += HeatMap_ContentRendered;
 
+            can.ValueChanged += Can_ValueChanged;
+        }
+
+        private void Can_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            if (plotWindows.ContainsKey(e.Data.key))
+            {
+                plotWindows[e.Data.key].UpdatePlotModel(e.Data);
+            }
+        }
+
+        private void Can_ValueAdded(object sender, ValueChangedEventArgs e)
+        {
+            UpdateHeatmap();
         }
 
         private void HeatMap_ContentRendered(object sender, EventArgs e)
@@ -75,7 +99,7 @@ namespace Fagprojekt
 
         public void UpdateHeatmap()
         {
-            double temp = Math.Sqrt(data.Values.Count);
+            double temp = Math.Sqrt(can.Dict.Values.Count);
 
             int length = (int)temp;
 
@@ -92,7 +116,7 @@ namespace Fagprojekt
             int i = 0;
             int j = 0;
 
-            foreach (Datapoint data in data.Values)
+            foreach (Datapoint data in can.Dict.Values)
             {
                 dataArray[i, j] = data.key;
                 colorArray[i, j] = (DateTime.UtcNow - data.time).Milliseconds;
@@ -103,7 +127,7 @@ namespace Fagprojekt
                     j++;
                 }
             }
-            lst.ItemsSource = ArrayToList(dataArray);
+            this.Dispatcher.Invoke(()=> lst.ItemsSource = ArrayToList(dataArray));
 
             
             
@@ -126,6 +150,16 @@ namespace Fagprojekt
             return lsts;
         }
 
+        public void UpdatePlots()
+        {
+            foreach(PlotWindow plotwindow in plotWindows.Values)
+            {
+                plotwindow.Refresh();
+            }
+        }
+
+
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -135,20 +169,29 @@ namespace Fagprojekt
 
             int key = (int)button.Content;
 
+            if (!plotWindows.ContainsKey(key))
+            {
 
-            PlotWindow plotwindow;
-            Timer plottimer;
+                PlotWindow plotwindow;
 
 
-            button.Background = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+                button.Background = new SolidColorBrush(Color.FromRgb(255, 0, 0));
 
-            plotwindow = new PlotWindow(key);
-            plotwindow.Show();
+                plotwindow = new PlotWindow(key);
+                plotwindow.Show();
 
-            plottimer = new Timer(200);
-            plottimer.Elapsed += (s, se) => plotwindow.UpdatePlotModel(data[key]);
-            plottimer.AutoReset = true;
-            plottimer.Start();
+
+                plotwindow.Closed += ((s,se) => plotWindows.Remove(key));
+
+                plotWindows.Add(key, plotwindow);
+
+            }
+            else
+            {
+                plotWindows[key].Close();
+                plotWindows.Remove(key);
+            }
+
 
 
 

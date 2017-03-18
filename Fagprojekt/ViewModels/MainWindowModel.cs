@@ -54,14 +54,12 @@ namespace Fagprojekt.ViewModels
 
         private void SetUpModel()
         {
-
-
-            PlotModel.LegendTitle = "Legend";
+            /*
             PlotModel.LegendOrientation = LegendOrientation.Horizontal;
             PlotModel.LegendPlacement = LegendPlacement.Outside;
             PlotModel.LegendPosition = LegendPosition.TopRight;
             PlotModel.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
-            PlotModel.LegendBorder = OxyColors.Black;
+            PlotModel.LegendBorder = OxyColors.Black;*/
             
             var dateAxis = new OxyPlot.Axes.DateTimeAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 };
             PlotModel.Axes.Add(dateAxis);
@@ -74,7 +72,7 @@ namespace Fagprojekt.ViewModels
                 StrokeThickness = 2,
                 MarkerSize = 3,
                 CanTrackerInterpolatePoints = false,
-                Title = string.Format("Detector {0}", 0),
+                //Title = string.Format("Detector {0}", 0),
                 Smooth = false,
             };
 
