@@ -1,6 +1,6 @@
 # Fagprojekt
 CAN bus information visualizer using wpf
-
+cocksuckers
 
 To Do:
   Make robust:
