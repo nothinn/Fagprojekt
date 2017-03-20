@@ -40,6 +40,9 @@ namespace Fagprojekt.ViewModels
             if (lineSerie != null)
             {
                 int sum = 0;
+
+
+
                 foreach (byte temp in data.data)
                 {
                     sum += temp;
@@ -53,17 +56,10 @@ namespace Fagprojekt.ViewModels
         }
 
         private void SetUpModel()
-        {
-            /*
-            PlotModel.LegendOrientation = LegendOrientation.Horizontal;
-            PlotModel.LegendPlacement = LegendPlacement.Outside;
-            PlotModel.LegendPosition = LegendPosition.TopRight;
-            PlotModel.LegendBackground = OxyColor.FromAColor(200, OxyColors.White);
-            PlotModel.LegendBorder = OxyColors.Black;*/
-            
+        {            
             var dateAxis = new OxyPlot.Axes.DateTimeAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, IntervalLength = 80 };
             PlotModel.Axes.Add(dateAxis);
-            var valueAxis = new OxyPlot.Axes.LinearAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot, Title = "Value"};
+            var valueAxis = new OxyPlot.Axes.LinearAxis() { MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Dot};
             PlotModel.Axes.Add(valueAxis);
 
 
