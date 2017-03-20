@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,7 +33,7 @@ namespace Fagprojekt
         }
 
         private int[] IDs = new int[0];
-
+        public List<int> ShowID = new List<int>();
         private SocketClient socket;
         FileStream logStream;
         StreamWriter logWriter;
@@ -56,7 +57,24 @@ namespace Fagprojekt
         {
             running = false;
         }
+        public void vis(String s)
+        {
+            try
+            {
+               
 
+                ShowID.Add(int.Parse(s, System.Globalization.NumberStyles.HexNumber));
+               
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+        public void nyShowID()
+        {
+            ShowID.Clear();
+        }
         public override string ToString()
         {
 
@@ -66,17 +84,18 @@ namespace Fagprojekt
 
             foreach (int id in IDs)
             {
-                Datapoint entry = dict[id];
-                
-                text.AppendFormat("ID: {0:X3}, Data: ", entry.key);
+               
+                    Datapoint entry = dict[id];
 
-                foreach (byte data in entry.data)
+                    text.AppendFormat("ID: {0:X3}, Data: ", entry.key);
+                if (!ShowID.Contains(id)) //tilføjet af witting
                 {
-                    text.AppendFormat("{0:X2}, ", data);
+                    foreach (byte data in entry.data)
+                    {
+                        text.AppendFormat("{0:X2}, ", data);
+                    }
                 }
                 text.AppendLine();
-
-
             }
             text.AppendFormat("Datapoints: {0}\n", IDs.Length);
 
@@ -311,7 +330,7 @@ namespace Fagprojekt
                     temp[temp.Length - 1] = data.key;
 
                     Array.Sort(temp);
-
+                   
                     IDs = temp;
 
                 }
