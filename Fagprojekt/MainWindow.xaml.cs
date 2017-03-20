@@ -143,6 +143,36 @@ namespace Fagprojekt
             heatMap = null;
         }
 
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void TextBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+            show.AcceptsReturn = true;
+
+
+
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            string[] allLines = show.Text.Split('\n');
+
+            if (can != null)
+            {
+                can.nyShowID();
+                foreach (string text in allLines)
+                {
+                                     
+                    can.vis(text);
+                }
+            }
+            //show.Text = int.Parse(show.Text, System.Globalization.NumberStyles.HexNumber).ToString();
+        }
+
+        
     }
 
 
